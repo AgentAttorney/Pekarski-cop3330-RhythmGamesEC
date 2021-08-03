@@ -3,8 +3,11 @@ package ucf.assignments;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.Objects;
 
 public class FindSongNameList {
@@ -31,5 +34,22 @@ public class FindSongNameList {
     private static String lowestDirectory(String fileNameRaw) {
             String SongName = fileNameRaw.replace("C:\\Games\\StepMania 5\\Songs\\DDR Official Songs\\","");
             return SongName;
+    }
+
+    public static void OutputImage(String absolutePath, Score selectedItem) {
+            String songTitle = selectedItem.getName();
+            String songDifficulty = selectedItem.getDifficulty().toUpperCase();
+            String songScore = selectedItem.getScore();
+            String songCombo = selectedItem.getCombo();
+
+            CreateBuffImg get_bg = new CreateBuffImg();
+            addGraphics Graphics = new addGraphics();
+            WriteBufferedImage product = new WriteBufferedImage();
+
+            BufferedImage songBackground = get_bg.getBG(songTitle);
+            BufferedImage CompletedScore = Graphics.makeGraphics(songBackground,songTitle,songDifficulty,songScore,songCombo);
+            product.writeToFile(CompletedScore,songTitle,songDifficulty,absolutePath);
+
+
     }
 }

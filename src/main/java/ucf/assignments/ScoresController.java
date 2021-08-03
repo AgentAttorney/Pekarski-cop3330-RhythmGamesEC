@@ -80,39 +80,40 @@ public class ScoresController implements Initializable {
         File file = dc.showDialog(stage);
         if(file != null){
             // Write the image here using my old code
+            FindSongNameList.OutputImage(file.getAbsolutePath(),ScoreList.getSelectionModel().getSelectedItem());
         }
 
     }
 
 
-    public void SearchButtonPushed(ActionEvent event){
+    public void SearchButtonPushed(ActionEvent event) {
         // NOT FULLY FUNCTIONAL BEWARE
-                if(CheckSearch.isSelected()) {
-                    FilteredList<Score> FilteredScores = new FilteredList<>(ScoreList.getItems(), b -> true);
-                    SearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
-                        FilteredScores.setPredicate(score -> {
-                            if (newValue.isEmpty()) {
-                                return true;
-                            }
-                            String lcFilter = newValue.toLowerCase();
-                            if (score.getName().toLowerCase().contains(lcFilter)) {
-                                return true;
-                            } else if (score.getDifficulty().toLowerCase().contains(lcFilter)) {
-                                return true;
-                            } else if (score.getScore().contains(newValue)) {
-                                return true;
-                            } else if (score.getCombo().toLowerCase().contains(lcFilter)) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+        if (CheckSearch.isSelected()) {
+            FilteredList<Score> FilteredScores = new FilteredList<>(ScoreList.getItems(), b -> true);
+            SearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+                FilteredScores.setPredicate(score -> {
+                    if (newValue.isEmpty()) {
+                        return true;
+                    }
+                    String lcFilter = newValue.toLowerCase();
+                    if (score.getName().toLowerCase().contains(lcFilter)) {
+                        return true;
+                    } else if (score.getDifficulty().toLowerCase().contains(lcFilter)) {
+                        return true;
+                    } else if (score.getScore().contains(newValue)) {
+                        return true;
+                    } else if (score.getCombo().toLowerCase().contains(lcFilter)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
 
-                        });
-                    });
-                    SortedList<Score> sortedScores = new SortedList<>(FilteredScores);
-                    sortedScores.comparatorProperty().bind(ScoreList.comparatorProperty());
-                    ScoreList.setItems(sortedScores);
-                }
+                });
+            });
+            SortedList<Score> sortedScores = new SortedList<>(FilteredScores);
+            sortedScores.comparatorProperty().bind(ScoreList.comparatorProperty());
+            ScoreList.setItems(sortedScores);
+        }
     }
 
     @Override
