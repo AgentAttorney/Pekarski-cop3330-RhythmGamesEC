@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
@@ -40,6 +41,15 @@ public class ScoresController implements Initializable {
     @FXML TableColumn<Score,String> DifficultyColumn;
     @FXML TableColumn<Score,String> ScoreColumn;
     @FXML TableColumn<Score,String> ComboColumn;
+
+
+    public void LoadSongsPushed(ActionEvent event){
+        Stage stage = (Stage) NameChoice.getScene().getWindow();
+        ObservableList<String> SongNames = FindSongNameList.FindNames(stage);
+        NameChoice.setItems(SongNames);
+        NameChoice.setValue(SongNames.get(0));
+        EnterScoreButton.setDisable(false);
+    }
 
     public void ClearSelectionPushed(ActionEvent event){
         ScoreList.getSelectionModel().clearSelection();
@@ -80,7 +90,7 @@ public class ScoresController implements Initializable {
         File file = dc.showDialog(stage);
         if(file != null){
             // Write the image here using my old code
-            FindSongNameList.OutputImage(file.getAbsolutePath(),ScoreList.getSelectionModel().getSelectedItem());
+            FindSongNameList.OutputImage(file.getAbsolutePath(),ScoreList.getSelectionModel().getSelectedItem(),stage);
         }
 
     }
@@ -139,15 +149,17 @@ public class ScoresController implements Initializable {
         ScoreList.setItems(FXCollections.observableArrayList());
 
         // ************************** CHOICE BOX SETUP *************************
-
-        ObservableList<String> SongNames = FindSongNameList.FindNames();
+        ObservableList<String> SongNames = FXCollections.observableArrayList("Click Load Songs");
         NameChoice.setItems(SongNames);
         DifficultyChoice.getItems().addAll("Beginner","Basic","Difficult","Expert","Challenge");
+        DifficultyChoice.setValue("Basic");
         ComboChoice.getItems().addAll("Pass","Fail","FC","GFC","PFC","MFC");
+        ComboChoice.setValue("Pass");
+        ScoreValue.setText("0");
 
         // ************************** BUTTON SETUP *************************
 
-        EnterScoreButton.setDisable(false);
+        EnterScoreButton.setDisable(true);
         MakeImageButton.disableProperty().bind(Bindings.isEmpty(ScoreList.getSelectionModel().getSelectedItems()));
 
 
@@ -180,6 +192,9 @@ public class ScoresController implements Initializable {
                             EnterScoreButton.setDisable(true);
                         }
                     }
+                }
+                else{
+                    EnterScoreButton.setDisable(true);
                 }
         }
         );
