@@ -12,6 +12,9 @@ public class CreateBuffImg {
     public BufferedImage getBG(String songTitle, Stage stage) {
         BufferedImage bi;
         try{
+            // Create a directory chooser and once the user has chosen a directory to place the image
+            // Return the buffer image that will return the jacket in the song folder
+            // In an ideal scenario, I will make the image look for the banner (consistent size)
             DirectoryChooser dc = new DirectoryChooser();
             File file = dc.showDialog(stage);
             bi = ImageIO.read(new File(file + "/"
@@ -19,6 +22,7 @@ public class CreateBuffImg {
             return bi;
         }
         catch(IOException e){
+            // You didn't pick an actual song directory, may change to let you choose a new one
             System.out.println("The song does not exist,or was misspelled.");
         }
         return null; // should NEVER reach here due to catch

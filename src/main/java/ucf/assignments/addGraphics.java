@@ -37,6 +37,7 @@ public class addGraphics {
         }
 
         g2d.drawString(songTitle,30,50);
+        // based on Colors present in DDR Songs in the Arcade
         switch(songDifficulty){
             case "BEGINNER":
                 g2d.setColor(light_blue);
@@ -51,14 +52,14 @@ public class addGraphics {
                 g2d.setColor(dgreen);
                 break;
             default:
-                g2d.setColor(purple);
+                g2d.setColor(purple); //  CHALLENGE
         }
         g2d.drawString(songDifficulty,250,50);
 
         // Make Song Text
         g2d.setColor(Color.black);
         g2d.drawString("Score: ",200,85);
-
+        // The colors of the FC types. Normally a colored circle next to the score, but I deviated
         switch(songCombo){
             case "FC":
                 g2d.setColor(light_blue);

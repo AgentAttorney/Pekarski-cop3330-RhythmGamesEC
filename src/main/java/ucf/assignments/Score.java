@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 
 public class Score {
+    // Basic Constructor
     public Score(String name, String difficulty, String score, String combo) {
         this.Name = new SimpleStringProperty(name);
         this.Difficulty = new SimpleStringProperty(difficulty);
@@ -25,6 +26,8 @@ public class Score {
 
     public static boolean ChangeValue(ucf.assignments.Score score_selected, String score) {
             try{
+                // Checks if the score value is an Integer, then checks if its in the valid score range
+                // If it fails either condition, it returns false (does not change value)
                 int number = Integer.parseInt(score);
                 if(number >= 0 && number <= 1000000){
                     score_selected.setScore(score);
@@ -38,6 +41,8 @@ public class Score {
     }
 
     public static boolean ChangeCombo(ucf.assignments.Score score_selected, String new_combo) {
+        // If the new_combo rating exists among a set of options that happen to be
+        // the same as our Choice Box Combo, set the new string, otherwise keep the old string
         String lcCombo = new_combo.toLowerCase();
         if(lcCombo.equalsIgnoreCase("mfc") || lcCombo.equalsIgnoreCase("pfc") || lcCombo.equalsIgnoreCase("gfc") || lcCombo.equalsIgnoreCase("fc") || lcCombo.equalsIgnoreCase("pass") || lcCombo.equalsIgnoreCase("fail")){
             score_selected.setCombo(new_combo.toUpperCase());

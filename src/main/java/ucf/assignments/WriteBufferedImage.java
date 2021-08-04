@@ -11,6 +11,7 @@ public class WriteBufferedImage {
         File OutputFile = new File(absolutePath + "\\" + songTitle
             + " " + songDifficulty + ".png");
         try{
+            // write the image to a file. Will override the previous version
             ImageIO.write(completedScore,"png",OutputFile);
         }
         catch(IOException e){

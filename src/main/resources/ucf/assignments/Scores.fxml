@@ -88,5 +88,15 @@
             <Insets bottom="2.0" />
          </GridPane.margin>
       </Button>
+      <Button mnemonicParsing="false" onAction="#SaveButtonPushed" text="Save" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets left="20.0" />
+         </GridPane.margin>
+      </Button>
+      <Button mnemonicParsing="false" onAction="#LoadButtonPushed" text="Load" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets right="20.0" />
+         </GridPane.margin>
+      </Button>
    </children>
 </GridPane>

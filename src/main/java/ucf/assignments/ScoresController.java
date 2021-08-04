@@ -1,8 +1,7 @@
 package ucf.assignments;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -13,13 +12,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ScoresController implements Initializable {
@@ -44,20 +44,32 @@ public class ScoresController implements Initializable {
 
 
     public void LoadSongsPushed(ActionEvent event){
+        // Gets the stage and sends it to be used by FindNames
         Stage stage = (Stage) NameChoice.getScene().getWindow();
+
+        // Returns an observable list which we set the Choice Box for Names with
         ObservableList<String> SongNames = FindSongNameList.FindNames(stage);
+
+        // Set the Choice Box Items and initialize with a value, and let user enter a score
         NameChoice.setItems(SongNames);
         NameChoice.setValue(SongNames.get(0));
         EnterScoreButton.setDisable(false);
     }
 
     public void ClearSelectionPushed(ActionEvent event){
+        // Allows for Deselection of Table Object
+        // May not be useful for users, but useful for testing at least
         ScoreList.getSelectionModel().clearSelection();
     }
 
     public void EnterScorePushed(ActionEvent event){
+        // Get the values in the text fields and make a new Score
         Score score = new Score(NameChoice.getValue(),DifficultyChoice.getValue(),ScoreValue.getText(),ComboChoice.getValue());
+
+        // Check if the new Score matches an existing score
         boolean match_Score = Score.matchingScore(score,ScoreList.getItems());
+
+        // Add the Score unless one of the fields are empty or matches an existing score
         if(!NameChoice.getValue().isEmpty() && !DifficultyChoice.getValue().isEmpty() && !ComboChoice.getValue().isEmpty() && !match_Score){
             // add Item
             ScoreList.getItems().add(score);
@@ -66,7 +78,9 @@ public class ScoresController implements Initializable {
     @FXML
     public void changeScoreValueEdit(TableColumn.CellEditEvent<Score,String> editedCell){
         Score score_selected = ScoreList.getSelectionModel().getSelectedItem();
-        String  new_score = editedCell.getNewValue();
+        String new_score = editedCell.getNewValue();
+
+        // Check if the score should be changed
         boolean was_changed = Score.ChangeValue(score_selected,new_score);
         if(!was_changed){
             ScoreList.refresh();
@@ -76,6 +90,8 @@ public class ScoresController implements Initializable {
     public void changeComboValueEdit(TableColumn.CellEditEvent<Score,String> editedCell){
         Score score_selected = ScoreList.getSelectionModel().getSelectedItem();
         String new_combo = editedCell.getNewValue();
+
+        // Check if the Combo Type should be changed
         boolean was_changed = Score.ChangeCombo(score_selected,new_combo);
         if(!was_changed){
             ScoreList.refresh();
@@ -84,17 +100,79 @@ public class ScoresController implements Initializable {
 
     @FXML
     public void MakeImageButtonPushed(ActionEvent event){
+
+        // Lets the user choose a directory to place their image in
         Stage stage = (Stage) ScoreList.getScene().getWindow();
         DirectoryChooser dc = new DirectoryChooser();
         dc.setTitle("Location of Images");
         File file = dc.showDialog(stage);
+
+        // if the user selected a directory
         if(file != null){
             // Write the image here using my old code
             FindSongNameList.OutputImage(file.getAbsolutePath(),ScoreList.getSelectionModel().getSelectedItem(),stage);
         }
 
     }
+    public void SaveButtonPushed(ActionEvent event){
 
+        // get the current stage and let the user choose a directory to save their JSON file
+        Stage stage = (Stage) ScoreList.getScene().getWindow();
+        DirectoryChooser dc = new DirectoryChooser();
+        File file = dc.showDialog(stage);
+
+        // Create an Array List of Serializable Scores (identical class except they use Strings)
+        ArrayList<ScoreSerialize> scores_for_file = new ArrayList<>();
+        try{
+            // Loop through all the Items in the table, make a new Serialized Score with the parameters
+            // Add it to the Array List
+            for(Score score: ScoreList.getItems()){
+                ScoreSerialize serialized_score = new ScoreSerialize(score.getName(),score.getDifficulty(),score.getScore(),score.getCombo());
+                scores_for_file.add(serialized_score);
+            }
+            // Make a ScoresSerialize instance that simply has an arraylist of Serialized Score
+            ScoresSerialize serial_scores = new ScoresSerialize(scores_for_file);
+
+            // Write the above class instance to the json file denoted "scores.json"
+            new ObjectMapper().writeValue(Paths.get(file + "/scores.json").toFile(),serial_scores);
+        }
+        catch(Exception ignored){
+
+        }
+    }
+
+    public void LoadButtonPushed(ActionEvent event){
+        // Check first if the Table is empty, so we don't load into a filled table
+        if(ScoreList.getItems().isEmpty()) {
+            try {
+                // Make a new FileChooser and let the user search for JSON files
+                Stage stage = (Stage) ScoreList.getScene().getWindow();
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Load Scores From Previous App Instance");
+                fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+                File file = fc.showOpenDialog(stage);
+
+                // Get the contents in the JSON file using ObjectMapper and add them to the ScoresSerialize class
+                // That class's Arraylist will then contain all the scores. Then make an empty Observable List of Scores
+                ScoresSerialize S_Scores = new ObjectMapper().readValue(Paths.get(String.valueOf(file)).toFile(), ScoresSerialize.class);
+                ObservableList<Score> addTableFromFile = FXCollections.observableArrayList();
+
+                // loop through all the Scores in the Arraylist, turn each into a ScoreSerializable class instance
+                // then turn each of those instances into a new Score, then add it to the Observable List
+                for (int i = 0; i < S_Scores.getScores().size(); i++) {
+                    ScoreSerialize scoreToUnserialize = S_Scores.getScores().get(i);
+                    Score score = new Score(scoreToUnserialize.name, scoreToUnserialize.difficulty, scoreToUnserialize.score, scoreToUnserialize.combo);
+                    addTableFromFile.add(score);
+                }
+                // Add the Observable List to the Table
+                ScoreList.getItems().addAll(addTableFromFile);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 
     public void SearchButtonPushed(ActionEvent event) {
         // NOT FULLY FUNCTIONAL BEWARE
@@ -112,11 +190,7 @@ public class ScoresController implements Initializable {
                         return true;
                     } else if (score.getScore().contains(newValue)) {
                         return true;
-                    } else if (score.getCombo().toLowerCase().contains(lcFilter)) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    } else return score.getCombo().toLowerCase().contains(lcFilter);
 
                 });
             });
@@ -132,10 +206,10 @@ public class ScoresController implements Initializable {
         // ************************** TABLE SETUP *************************
 
         // Set the Data types that each Table Column accepts, and where it refers to in code
-        NameColumn.setCellValueFactory(new PropertyValueFactory<Score,String>("Name"));
-        DifficultyColumn.setCellValueFactory(new PropertyValueFactory<Score,String>("Difficulty"));
-        ScoreColumn.setCellValueFactory(new PropertyValueFactory<Score,String>("Score"));
-        ComboColumn.setCellValueFactory(new PropertyValueFactory<Score,String>("Combo"));
+        NameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        DifficultyColumn.setCellValueFactory(new PropertyValueFactory<>("Difficulty"));
+        ScoreColumn.setCellValueFactory(new PropertyValueFactory<>("Score"));
+        ComboColumn.setCellValueFactory(new PropertyValueFactory<>("Combo"));
 
         ScoreList.setEditable(true);
 
@@ -181,16 +255,11 @@ public class ScoresController implements Initializable {
                     }
                     else{
                         int score = Integer.parseInt(scoreString);
-                        if ((score >= 0 && score <= 1000000)) {
-                            // Validating a score in DDR is more complex, but would require
-                            // the user to know metadata about their steps or
-                            // for the program to extract the metadata from an xml file
-                            // in the appdata for the program in a specific user file
-                            EnterScoreButton.setDisable(false);
-                        }
-                        else{
-                            EnterScoreButton.setDisable(true);
-                        }
+                        // Validating a score in DDR is more complex, but would require
+                        // the user to know metadata about their steps or
+                        // for the program to extract the metadata from an xml file
+                        // in the appdata for the program in a specific user file
+                        EnterScoreButton.setDisable(score < 0 || score > 1000000);
                     }
                 }
                 else{
