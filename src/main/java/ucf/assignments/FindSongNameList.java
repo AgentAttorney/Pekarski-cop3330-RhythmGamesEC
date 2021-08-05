@@ -19,26 +19,31 @@ public class FindSongNameList {
             // Create a Directory Chooser where the user selects where the system looks for
             // sub directories (i.e. the songs as each song is located in a folder sub-directory)
             ObservableList<String> NameList = FXCollections.observableArrayList();
-            DirectoryChooser dc = new DirectoryChooser();
-            File dir = dc.showDialog(stage);
+            try {
+                DirectoryChooser dc = new DirectoryChooser();
+                File dir = dc.showDialog(stage);
 
-            // Checks if each value in the selected directory is a sub-directory
-            File[] files = dir.listFiles();
-            FileFilter fileFilter = new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.isDirectory();
+                // Checks if each value in the selected directory is a sub-directory
+                File[] files = dir.listFiles();
+                FileFilter fileFilter = new FileFilter() {
+                    @Override
+                    public boolean accept(File pathname) {
+                        return pathname.isDirectory();
+                    }
+                };
+                files = dir.listFiles(fileFilter);
+
+                // For each file in the array, Replace the full directory name with the low part of the directory
+                // For example, "C:\Games\StepMania 5\Songs\Love Live!\DROPOUT" would turn into "DROPOUT"
+                // add the SongName to the NameList, then return the NameList Once completed
+                for (int i = 0; i < Objects.requireNonNull(files).length; i++) {
+                    File filename = files[i];
+                    String SongName = FindSongNameList.lowestDirectory(filename.toString());
+                    NameList.add(SongName);
                 }
-            };
-            files = dir.listFiles(fileFilter);
+            }
+            catch(Exception ignored){
 
-            // For each file in the array, Replace the full directory name with the low part of the directory
-            // For example, "C:\Games\StepMania 5\Songs\Love Live!\DROPOUT" would turn into "DROPOUT"
-            // add the SongName to the NameList, then return the NameList Once completed
-            for(int i = 0; i< Objects.requireNonNull(files).length; i++){
-                File filename = files[i];
-                String SongName = FindSongNameList.lowestDirectory(filename.toString());
-                NameList.add(SongName);
             }
                     return NameList;
         }

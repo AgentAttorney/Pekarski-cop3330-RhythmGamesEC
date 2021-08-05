@@ -42,6 +42,8 @@ public class ScoresController implements Initializable {
     @FXML TableColumn<Score,String> ScoreColumn;
     @FXML TableColumn<Score,String> ComboColumn;
 
+    private ObservableList<Score> data = FXCollections.observableArrayList();
+
 
     public void LoadSongsPushed(ActionEvent event){
         // Gets the stage and sends it to be used by FindNames
@@ -49,11 +51,12 @@ public class ScoresController implements Initializable {
 
         // Returns an observable list which we set the Choice Box for Names with
         ObservableList<String> SongNames = FindSongNameList.FindNames(stage);
-
-        // Set the Choice Box Items and initialize with a value, and let user enter a score
-        NameChoice.setItems(SongNames);
-        NameChoice.setValue(SongNames.get(0));
-        EnterScoreButton.setDisable(false);
+        if(!SongNames.isEmpty()){
+            // Set the Choice Box Items and initialize with a value, and let user enter a score
+            NameChoice.setItems(SongNames);
+            NameChoice.setValue(SongNames.get(0));
+            EnterScoreButton.setDisable(false);
+        }
     }
 
     public void ClearSelectionPushed(ActionEvent event){
@@ -72,7 +75,9 @@ public class ScoresController implements Initializable {
         // Add the Score unless one of the fields are empty or matches an existing score
         if(!NameChoice.getValue().isEmpty() && !DifficultyChoice.getValue().isEmpty() && !ComboChoice.getValue().isEmpty() && !match_Score){
             // add Item
-            ScoreList.getItems().add(score);
+            data.add(score);
+            ScoreList.setItems(data);
+            //ScoreList.getItems().add(score);
         }
     }
     @FXML
@@ -126,7 +131,7 @@ public class ScoresController implements Initializable {
         try{
             // Loop through all the Items in the table, make a new Serialized Score with the parameters
             // Add it to the Array List
-            for(Score score: ScoreList.getItems()){
+            for(Score score: data){
                 ScoreSerialize serialized_score = new ScoreSerialize(score.getName(),score.getDifficulty(),score.getScore(),score.getCombo());
                 scores_for_file.add(serialized_score);
             }
@@ -165,39 +170,38 @@ public class ScoresController implements Initializable {
                     addTableFromFile.add(score);
                 }
                 // Add the Observable List to the Table
-                ScoreList.getItems().addAll(addTableFromFile);
+                data.addAll(addTableFromFile);
+                ScoreList.setItems(data);
 
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ignored) {
             }
         }
 
     }
 
     public void SearchButtonPushed(ActionEvent event) {
-        // NOT FULLY FUNCTIONAL BEWARE
-        if (CheckSearch.isSelected()) {
-            FilteredList<Score> FilteredScores = new FilteredList<>(ScoreList.getItems(), b -> true);
-            SearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
-                FilteredScores.setPredicate(score -> {
-                    if (newValue.isEmpty()) {
-                        return true;
-                    }
-                    String lcFilter = newValue.toLowerCase();
-                    if (score.getName().toLowerCase().contains(lcFilter)) {
-                        return true;
-                    } else if (score.getDifficulty().toLowerCase().contains(lcFilter)) {
-                        return true;
-                    } else if (score.getScore().contains(newValue)) {
-                        return true;
-                    } else return score.getCombo().toLowerCase().contains(lcFilter);
+        ObservableList<Score> scores = data;
+        FilteredList<Score> FilteredScores = new FilteredList<>(scores, p -> true);
+        SearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            FilteredScores.setPredicate(score -> {
+                if ( newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lcFilter = newValue.toLowerCase();
+                if (score.getName().toLowerCase().contains(lcFilter)) {
+                    return true;
+                } else if (score.getDifficulty().toLowerCase().contains(lcFilter)) {
+                    return true;
+                } else if (score.getScore().contains(newValue)) {
+                    return true;
+                } else return score.getCombo().toLowerCase().contains(lcFilter);
 
-                });
             });
-            SortedList<Score> sortedScores = new SortedList<>(FilteredScores);
-            sortedScores.comparatorProperty().bind(ScoreList.comparatorProperty());
-            ScoreList.setItems(sortedScores);
-        }
+        });
+        SortedList<Score> sortedScores = new SortedList<>(FilteredScores);
+        sortedScores.comparatorProperty().bind(ScoreList.comparatorProperty());
+        //data.setAll(sortedScores); // Does different thing than I intended
+        ScoreList.setItems(sortedScores);
     }
 
     @Override
@@ -219,7 +223,7 @@ public class ScoresController implements Initializable {
         ScoreColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         ComboColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        // Set the list to an empty list
+        // Set the list to an initially empty list
         ScoreList.setItems(FXCollections.observableArrayList());
 
         // ************************** CHOICE BOX SETUP *************************
@@ -267,6 +271,5 @@ public class ScoresController implements Initializable {
                 }
         }
         );
-
     }
 }
