@@ -17,6 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -24,8 +25,19 @@ import java.util.ResourceBundle;
 
 public class ScoresController implements Initializable {
 
+    @FXML MenuBar Menus;
+    @FXML Menu File; // Includes Save and Load
+    @FXML Menu Songs; // Includes Load Songs
+    @FXML Menu Help; // Includes link to github README.txt
+
+    @FXML MenuItem Save;
+    @FXML MenuItem Load;
+    @FXML MenuItem Exit;
+    @FXML MenuItem LoadSongs;
+    @FXML MenuItem About;
+
+
     @FXML TextField SearchBar;
-    @FXML CheckBox CheckSearch;
 
     @FXML ChoiceBox<String> NameChoice;
     @FXML ChoiceBox<String> DifficultyChoice;
@@ -44,81 +56,6 @@ public class ScoresController implements Initializable {
 
     private ObservableList<Score> data = FXCollections.observableArrayList();
 
-
-    public void LoadSongsPushed(ActionEvent event){
-        // Gets the stage and sends it to be used by FindNames
-        Stage stage = (Stage) NameChoice.getScene().getWindow();
-
-        // Returns an observable list which we set the Choice Box for Names with
-        ObservableList<String> SongNames = FindSongNameList.FindNames(stage);
-        if(!SongNames.isEmpty()){
-            // Set the Choice Box Items and initialize with a value, and let user enter a score
-            NameChoice.setItems(SongNames);
-            NameChoice.setValue(SongNames.get(0));
-            EnterScoreButton.setDisable(false);
-        }
-    }
-
-    public void ClearSelectionPushed(ActionEvent event){
-        // Allows for Deselection of Table Object
-        // May not be useful for users, but useful for testing at least
-        ScoreList.getSelectionModel().clearSelection();
-    }
-
-    public void EnterScorePushed(ActionEvent event){
-        // Get the values in the text fields and make a new Score
-        Score score = new Score(NameChoice.getValue(),DifficultyChoice.getValue(),ScoreValue.getText(),ComboChoice.getValue());
-
-        // Check if the new Score matches an existing score
-        boolean match_Score = Score.matchingScore(score,ScoreList.getItems());
-
-        // Add the Score unless one of the fields are empty or matches an existing score
-        if(!NameChoice.getValue().isEmpty() && !DifficultyChoice.getValue().isEmpty() && !ComboChoice.getValue().isEmpty() && !match_Score){
-            // add Item
-            data.add(score);
-            ScoreList.setItems(data);
-            //ScoreList.getItems().add(score);
-        }
-    }
-    @FXML
-    public void changeScoreValueEdit(TableColumn.CellEditEvent<Score,String> editedCell){
-        Score score_selected = ScoreList.getSelectionModel().getSelectedItem();
-        String new_score = editedCell.getNewValue();
-
-        // Check if the score should be changed
-        boolean was_changed = Score.ChangeValue(score_selected,new_score);
-        if(!was_changed){
-            ScoreList.refresh();
-        }
-    }
-    @FXML
-    public void changeComboValueEdit(TableColumn.CellEditEvent<Score,String> editedCell){
-        Score score_selected = ScoreList.getSelectionModel().getSelectedItem();
-        String new_combo = editedCell.getNewValue();
-
-        // Check if the Combo Type should be changed
-        boolean was_changed = Score.ChangeCombo(score_selected,new_combo);
-        if(!was_changed){
-            ScoreList.refresh();
-        }
-    }
-
-    @FXML
-    public void MakeImageButtonPushed(ActionEvent event){
-
-        // Lets the user choose a directory to place their image in
-        Stage stage = (Stage) ScoreList.getScene().getWindow();
-        DirectoryChooser dc = new DirectoryChooser();
-        dc.setTitle(" Select Location to place your Score Image");
-        File file = dc.showDialog(stage);
-
-        // if the user selected a directory
-        if(file != null){
-            // Write the image here using my old code
-            FindSongNameList.OutputImage(file.getAbsolutePath(),ScoreList.getSelectionModel().getSelectedItem(),stage);
-        }
-
-    }
     public void SaveButtonPushed(ActionEvent event){
 
         // get the current stage and let the user choose a directory to save their JSON file
@@ -173,10 +110,10 @@ public class ScoresController implements Initializable {
                 // loop through all the Scores in the Arraylist, turn each into a ScoreSerializable class instance
                 // then turn each of those instances into a new Score, then add it to the Observable List
                 for(int i = 0; i < All_Scores_Serial.getScores().size(); i++) {
-                  ScoreSerialize scoreToUnserialize = All_Scores_Serial.getScores().get(i);
-                  Score score = new Score(scoreToUnserialize.name, scoreToUnserialize.difficulty, scoreToUnserialize.score, scoreToUnserialize.combo);
-                  addTableFromFile.add(score);
-              }
+                    ScoreSerialize scoreToUnserialize = All_Scores_Serial.getScores().get(i);
+                    Score score = new Score(scoreToUnserialize.name, scoreToUnserialize.difficulty, scoreToUnserialize.score, scoreToUnserialize.combo);
+                    addTableFromFile.add(score);
+                }
                 // Add the Observable List to the Table
                 data.addAll(addTableFromFile);
                 ScoreList.setItems(data);
@@ -185,6 +122,84 @@ public class ScoresController implements Initializable {
             }
         }
 
+    }
+
+    public void LoadSongsPushed(ActionEvent event){
+        // Gets the stage and sends it to be used by FindNames
+        Stage stage = (Stage) NameChoice.getScene().getWindow();
+
+        // Returns an observable list which we set the Choice Box for Names with
+        ObservableList<String> SongNames = FindSongNameList.FindNames(stage);
+        if(!SongNames.isEmpty()){
+            // Set the Choice Box Items and initialize with a value, and let user enter a score
+            NameChoice.setItems(SongNames);
+            NameChoice.setValue(SongNames.get(0));
+            EnterScoreButton.setDisable(false);
+        }
+    }
+
+    @FXML
+    public void MakeImageButtonPushed(ActionEvent event){
+
+        // Lets the user choose a directory to place their image in
+        Stage stage = (Stage) ScoreList.getScene().getWindow();
+        DirectoryChooser dc = new DirectoryChooser();
+        dc.setTitle("Select Location to place your Score Image");
+        File file = dc.showDialog(stage);
+
+        // if the user selected a directory
+        if(file != null){
+            // Write the image here using my old code
+            FindSongNameList.OutputImage(file.getAbsolutePath(),ScoreList.getSelectionModel().getSelectedItem(),stage);
+        }
+
+    }
+
+    @FXML
+    public void AboutButtonPushed(ActionEvent event){
+        try{
+            String githubREADME = "https://github.com/AgentAttorney/Pekarski-cop3330-RhythmGamesEC";
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(githubREADME));
+        } catch (IOException e) {
+            System.out.print(e.getMessage());
+        }
+    }
+
+    public void EnterScorePushed(ActionEvent event){
+        // Get the values in the text fields and make a new Score
+        Score score = new Score(NameChoice.getValue(),DifficultyChoice.getValue(),ScoreValue.getText(),ComboChoice.getValue());
+
+        // Check if the new Score matches an existing score
+        boolean match_Score = Score.matchingScore(score,ScoreList.getItems());
+
+        // Add the Score unless one of the fields are empty or matches an existing score
+        if(!NameChoice.getValue().isEmpty() && !DifficultyChoice.getValue().isEmpty() && !ComboChoice.getValue().isEmpty() && !match_Score){
+            // add Item
+            data.add(score);
+            ScoreList.setItems(data);
+        }
+    }
+    @FXML
+    public void changeScoreValueEdit(TableColumn.CellEditEvent<Score,String> editedCell){
+        Score score_selected = ScoreList.getSelectionModel().getSelectedItem();
+        String new_score = editedCell.getNewValue();
+
+        // Check if the score should be changed
+        boolean was_changed = Score.ChangeValue(score_selected,new_score);
+        if(!was_changed){
+            ScoreList.refresh();
+        }
+    }
+    @FXML
+    public void changeComboValueEdit(TableColumn.CellEditEvent<Score,String> editedCell){
+        Score score_selected = ScoreList.getSelectionModel().getSelectedItem();
+        String new_combo = editedCell.getNewValue();
+
+        // Check if the Combo Type should be changed
+        boolean was_changed = Score.ChangeCombo(score_selected,new_combo);
+        if(!was_changed){
+            ScoreList.refresh();
+        }
     }
 
     public void SearchButtonPushed(ActionEvent event) {

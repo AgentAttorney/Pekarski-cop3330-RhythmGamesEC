@@ -4,6 +4,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -23,42 +26,42 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <ChoiceBox fx:id="NameChoice" prefHeight="25.0" prefWidth="87.0">
+      <ChoiceBox fx:id="NameChoice" prefHeight="25.0" prefWidth="87.0" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets left="5.0" />
          </GridPane.margin>
       </ChoiceBox>
-      <Label text="Song Selection" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+      <Label text="Song Selection" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
          <GridPane.margin>
             <Insets left="10.0" top="15.0" />
          </GridPane.margin>
       </Label>
       <Label />
-      <ChoiceBox fx:id="DifficultyChoice" prefHeight="25.0" prefWidth="89.0" GridPane.halignment="RIGHT">
+      <ChoiceBox fx:id="DifficultyChoice" prefHeight="25.0" prefWidth="89.0" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
-            <Insets />
+            <Insets right="5.0" />
          </GridPane.margin>
       </ChoiceBox>
-      <Label text="Difficulty" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+      <Label text="Difficulty" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
          <GridPane.margin>
-            <Insets right="20.0" top="15.0" />
+            <Insets right="25.0" top="15.0" />
          </GridPane.margin>
       </Label>
-      <TextField fx:id="ScoreValue" alignment="CENTER" prefHeight="25.0" prefWidth="83.0" promptText="Enter Points" GridPane.valignment="BOTTOM">
+      <TextField fx:id="ScoreValue" alignment="CENTER" prefHeight="25.0" prefWidth="83.0" promptText="Enter Points" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
          <GridPane.margin>
-            <Insets bottom="-10.0" left="5.0" right="105.0" />
+            <Insets bottom="25.0" left="105.0" right="5.0" />
          </GridPane.margin>
       </TextField>
-      <ChoiceBox fx:id="ComboChoice" prefHeight="25.0" prefWidth="59.0" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+      <ChoiceBox fx:id="ComboChoice" prefHeight="25.0" prefWidth="59.0" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
          <GridPane.margin>
-            <Insets bottom="-10.0" right="10.0" />
+            <Insets bottom="35.0" right="20.0" />
          </GridPane.margin></ChoiceBox>
-      <Label text="Combo" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+      <Label text="Combo" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
          <GridPane.margin>
-            <Insets bottom="15.0" right="20.0" />
+            <Insets bottom="60.0" right="30.0" />
          </GridPane.margin>
       </Label>
-      <Button fx:id="EnterScoreButton" mnemonicParsing="false" onAction="#EnterScorePushed" text="Enter Score" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+      <Button fx:id="EnterScoreButton" mnemonicParsing="false" onAction="#EnterScorePushed" text="Enter Score" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
       <TableView fx:id="ScoreList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="2">
         <columns>
           <TableColumn fx:id="NameColumn" prefWidth="100.0" text="Name" />
@@ -67,36 +70,37 @@
             <TableColumn fx:id="ComboColumn" onEditCommit="#changeComboValueEdit" prefWidth="100.0" text="Combo" />
         </columns>
       </TableView>
-      <TextField fx:id="SearchBar" GridPane.columnIndex="1" GridPane.columnSpan="2">
+      <TextField fx:id="SearchBar" promptText="Click the Search Button to Enable Search" GridPane.columnIndex="1" GridPane.columnSpan="2">
          <GridPane.margin>
             <Insets left="10.0" right="10.0" />
          </GridPane.margin>
       </TextField>
       <Button fx:id="SearchButton" mnemonicParsing="false" onAction="#SearchButtonPushed" text="Enable Search" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
-      <Button fx:id="MakeImageButton" mnemonicParsing="false" onAction="#MakeImageButtonPushed" text="Make Image" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+      <Button fx:id="MakeImageButton" mnemonicParsing="false" onAction="#MakeImageButtonPushed" text="Make Image" GridPane.halignment="CENTER" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets top="75.0" />
          </GridPane.margin>
       </Button>
-      <Button mnemonicParsing="false" onAction="#ClearSelectionPushed" text="Clear Selection" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets bottom="75.0" />
-         </GridPane.margin>
-      </Button>
-      <Button mnemonicParsing="false" onAction="#LoadSongsPushed" text="Load Song List" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
-         <GridPane.margin>
-            <Insets bottom="2.0" />
-         </GridPane.margin>
-      </Button>
-      <Button mnemonicParsing="false" onAction="#SaveButtonPushed" text="Save" GridPane.rowIndex="2">
-         <GridPane.margin>
-            <Insets left="20.0" />
-         </GridPane.margin>
-      </Button>
-      <Button mnemonicParsing="false" onAction="#LoadButtonPushed" text="Load" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
-         <GridPane.margin>
-            <Insets right="20.0" />
-         </GridPane.margin>
-      </Button>
+      <MenuBar fx:id="Menus" GridPane.columnSpan="3" GridPane.valignment="TOP">
+        <menus>
+          <Menu fx:id="File" mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="Save" mnemonicParsing="false" onAction="#SaveButtonPushed" text="Save" />
+                  <MenuItem fx:id="Load" mnemonicParsing="false" onAction="#LoadButtonPushed" text="Load" />
+                  <MenuItem fx:id="Exit" mnemonicParsing="false" text="Exit" />
+            </items>
+          </Menu>
+          <Menu fx:id="Songs" mnemonicParsing="false" text="Songs">
+            <items>
+              <MenuItem fx:id="LoadSongs" mnemonicParsing="false" onAction="#LoadSongsPushed" text="Load Song List" />
+            </items>
+          </Menu>
+          <Menu fx:id="Help" mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem fx:id="About" mnemonicParsing="false" onAction="#AboutButtonPushed" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
    </children>
 </GridPane>
