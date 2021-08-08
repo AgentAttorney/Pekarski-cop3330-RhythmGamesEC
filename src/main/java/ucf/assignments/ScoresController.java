@@ -109,7 +109,7 @@ public class ScoresController implements Initializable {
         // Lets the user choose a directory to place their image in
         Stage stage = (Stage) ScoreList.getScene().getWindow();
         DirectoryChooser dc = new DirectoryChooser();
-        dc.setTitle("Location of Images");
+        dc.setTitle(" Select Location to place your Score Image");
         File file = dc.showDialog(stage);
 
         // if the user selected a directory
@@ -123,23 +123,31 @@ public class ScoresController implements Initializable {
 
         // get the current stage and let the user choose a directory to save their JSON file
         Stage stage = (Stage) ScoreList.getScene().getWindow();
-        DirectoryChooser dc = new DirectoryChooser();
-        File file = dc.showDialog(stage);
+        //DirectoryChooser dc = new DirectoryChooser();
+        //File file = dc.showDialog(stage);
+
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Select Location to Save Scores");
+        fc.setInitialFileName("DDRScores.json");
+        fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON Format","*.json"));
 
         // Create an Array List of Serializable Scores (identical class except they use Strings)
-        ArrayList<ScoreSerialize> scores_for_file = new ArrayList<>();
+        //ArrayList<ScoreSerialize> All_Scores = new ArrayList<>();
+        ScoresSerialize All_Scores = new ScoresSerialize(new ArrayList<>());
         try{
+            File file = fc.showSaveDialog(stage);
+            fc.setInitialDirectory(file.getParentFile());
             // Loop through all the Items in the table, make a new Serialized Score with the parameters
             // Add it to the Array List
             for(Score score: data){
                 ScoreSerialize serialized_score = new ScoreSerialize(score.getName(),score.getDifficulty(),score.getScore(),score.getCombo());
-                scores_for_file.add(serialized_score);
+                All_Scores.getScores().add(serialized_score);
             }
             // Make a ScoresSerialize instance that simply has an arraylist of Serialized Score
-            ScoresSerialize serial_scores = new ScoresSerialize(scores_for_file);
+            //ScoresSerialize All_Scores_List = new ScoresSerialize(All_Scores);
 
             // Write the above class instance to the json file denoted "scores.json"
-            new ObjectMapper().writeValue(Paths.get(file + "/scores.json").toFile(),serial_scores);
+            new ObjectMapper().writeValue(Paths.get(String.valueOf(file)).toFile(),All_Scores);
         }
         catch(Exception ignored){
 
@@ -153,22 +161,22 @@ public class ScoresController implements Initializable {
                 // Make a new FileChooser and let the user search for JSON files
                 Stage stage = (Stage) ScoreList.getScene().getWindow();
                 FileChooser fc = new FileChooser();
-                fc.setTitle("Load Scores From Previous App Instance");
+                fc.setTitle("Load Scores");
                 fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
                 File file = fc.showOpenDialog(stage);
 
                 // Get the contents in the JSON file using ObjectMapper and add them to the ScoresSerialize class
                 // That class's Arraylist will then contain all the scores. Then make an empty Observable List of Scores
-                ScoresSerialize S_Scores = new ObjectMapper().readValue(Paths.get(String.valueOf(file)).toFile(), ScoresSerialize.class);
+                ScoresSerialize All_Scores_Serial = new ObjectMapper().readValue(Paths.get(String.valueOf(file)).toFile(),ScoresSerialize.class);
                 ObservableList<Score> addTableFromFile = FXCollections.observableArrayList();
 
                 // loop through all the Scores in the Arraylist, turn each into a ScoreSerializable class instance
                 // then turn each of those instances into a new Score, then add it to the Observable List
-                for (int i = 0; i < S_Scores.getScores().size(); i++) {
-                    ScoreSerialize scoreToUnserialize = S_Scores.getScores().get(i);
-                    Score score = new Score(scoreToUnserialize.name, scoreToUnserialize.difficulty, scoreToUnserialize.score, scoreToUnserialize.combo);
-                    addTableFromFile.add(score);
-                }
+                for(int i = 0; i < All_Scores_Serial.getScores().size(); i++) {
+                  ScoreSerialize scoreToUnserialize = All_Scores_Serial.getScores().get(i);
+                  Score score = new Score(scoreToUnserialize.name, scoreToUnserialize.difficulty, scoreToUnserialize.score, scoreToUnserialize.combo);
+                  addTableFromFile.add(score);
+              }
                 // Add the Observable List to the Table
                 data.addAll(addTableFromFile);
                 ScoreList.setItems(data);

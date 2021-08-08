@@ -16,15 +16,15 @@ public class CreateBuffImg {
             // Return the buffer image that will return the jacket in the song folder
             // In an ideal scenario, I will make the image look for the banner (consistent size)
             DirectoryChooser dc = new DirectoryChooser();
+            dc.setTitle("Choose Song Directory");
             File file = dc.showDialog(stage);
-            bi = ImageIO.read(new File(file + "/"
-                    + songTitle +"/" + songTitle + "-jacket.png"));
+            bi = ImageIO.read(new File(file + "/" + songTitle + "-jacket.png"));
             return bi;
         }
-        catch(IOException e){
+        catch(Exception Ignored){
             // You didn't pick an actual song directory, may change to let you choose a new one
-            System.out.println("The song does not exist,or was misspelled.");
+            // System.out.println("The song does not exist,or was misspelled.");
         }
-        return null; // should NEVER reach here due to catch
+        return null;
     }
 }

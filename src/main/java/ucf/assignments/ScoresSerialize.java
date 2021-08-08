@@ -17,8 +17,8 @@ public class ScoresSerialize {
         Scores = scores;
     }
 
-    public ScoresSerialize(ArrayList<ScoreSerialize> scores) {
-        this.Scores = scores;
+    public ScoresSerialize(ArrayList<ScoreSerialize> Scores) {
+        this.Scores = Scores;
     }
 
 
