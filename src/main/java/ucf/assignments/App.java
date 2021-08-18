@@ -20,7 +20,7 @@ public class App extends Application {
             // set the parent to the Menu file, then set the scene with that parent and title
             // Have the window not be resizable
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Scores.fxml"));
-            Parent root = (Parent) loader.load();
+            Parent root = loader.load();
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Rhythm Game Scores");

@@ -55,7 +55,7 @@ public class ScoresController implements Initializable {
     @FXML TableColumn<Score,String> ScoreColumn;
     @FXML TableColumn<Score,String> ComboColumn;
 
-    private ObservableList<Score> data = FXCollections.observableArrayList();
+    private final ObservableList<Score> data = FXCollections.observableArrayList();
 
     public void SaveButtonPushed(ActionEvent event){
 

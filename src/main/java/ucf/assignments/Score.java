@@ -99,9 +99,9 @@ public class Score {
         this.Combo.set(combo);
     }
 
-    private SimpleStringProperty Name;
-    private SimpleStringProperty Difficulty;
-    private SimpleStringProperty Score;
-    private SimpleStringProperty Combo;
+    private final SimpleStringProperty Name;
+    private final SimpleStringProperty Difficulty;
+    private final SimpleStringProperty Score;
+    private final SimpleStringProperty Combo;
 
 }
