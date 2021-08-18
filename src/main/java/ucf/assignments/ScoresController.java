@@ -1,6 +1,7 @@
 package ucf.assignments;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -136,6 +137,10 @@ public class ScoresController implements Initializable {
             NameChoice.setValue(SongNames.get(0));
             EnterScoreButton.setDisable(false);
         }
+    }
+
+    public void ExitPushed(ActionEvent event){
+        Platform.exit();
     }
 
     @FXML

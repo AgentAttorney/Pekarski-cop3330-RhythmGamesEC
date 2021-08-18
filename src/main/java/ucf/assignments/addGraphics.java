@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.Formatter;
 
 public class addGraphics {
@@ -25,10 +24,8 @@ public class addGraphics {
 
 
         BufferedImage product = new BufferedImage(256,80,BufferedImage.TYPE_INT_RGB);
-        BufferedImage resizeBG = new BufferedImage(80,80,BufferedImage.TYPE_INT_RGB);
+        BufferedImage resizeBG = scaleImage(songBackground,80,80);
 
-        Graphics2D g2dResize = resizeBG.createGraphics();
-        g2dResize.drawImage(songBackground,0,0,80,80,null);
 
          // set background
         Graphics2D g2d = product.createGraphics(); // create 2D Graphics on top of background
@@ -104,7 +101,7 @@ public class addGraphics {
                 g2d.setColor(gold);
                 break;
             default:
-                g2d.setColor(Color.black); // pass or fail
+                g2d.setColor(Color.white); // pass or fail
         }
         g2d.drawString(songCombo,210,40);
 
@@ -114,6 +111,30 @@ public class addGraphics {
         g2d.setColor(Color.black);
         g2d.drawString(String.valueOf(format),143,70);
 
+        g2d.dispose();
+
         return product;
+    }
+
+    private BufferedImage scaleImage(BufferedImage songBackground, int width, int height) {
+        int imgWidth = songBackground.getWidth();
+        int imgHeight = songBackground.getHeight();
+        if(imgWidth*height < imgHeight*width){
+            width = imgWidth*height / imgHeight;
+        }
+        else{
+            height = imgHeight*width / imgWidth;
+        }
+        BufferedImage newBG = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = newBG.createGraphics();
+        try{
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            g.drawImage(songBackground,0,0,width,height,null);
+        }
+        finally{
+            g.dispose();
+        }
+        return newBG;
+
     }
 }

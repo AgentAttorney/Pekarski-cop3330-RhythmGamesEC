@@ -1,6 +1,7 @@
 package ucf.assignments;
 
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -15,10 +16,11 @@ public class CreateBuffImg {
             // Create a directory chooser and once the user has chosen a directory to place the image
             // Return the buffer image that will return the jacket in the song folder
             // In an ideal scenario, I will make the image look for the banner (consistent size)
-            DirectoryChooser dc = new DirectoryChooser();
-            dc.setTitle("Choose Song Directory");
-            File file = dc.showDialog(stage);
-            bi = ImageIO.read(new File(file + "/" + songTitle + "-jacket.png"));
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Select the Jacket or Background of " + songTitle);
+            fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Images (png,jpg,jpeg)","*.png","*.jpg","*.jpeg"));
+            File file1 = fc.showOpenDialog(stage);
+            bi = ImageIO.read(file1);
             return bi;
         }
         catch(Exception Ignored){

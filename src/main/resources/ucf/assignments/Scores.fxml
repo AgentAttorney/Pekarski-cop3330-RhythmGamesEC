@@ -47,21 +47,27 @@
             <Insets right="25.0" top="15.0" />
          </GridPane.margin>
       </Label>
-      <TextField fx:id="ScoreValue" alignment="CENTER" prefHeight="25.0" prefWidth="83.0" promptText="Enter Points" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+      <TextField fx:id="ScoreValue" alignment="CENTER" prefHeight="25.0" prefWidth="83.0" promptText="Enter Points" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
          <GridPane.margin>
-            <Insets bottom="25.0" left="105.0" right="5.0" />
+            <Insets bottom="25.0" left="5.0" right="105.0" />
          </GridPane.margin>
       </TextField>
       <ChoiceBox fx:id="ComboChoice" prefHeight="25.0" prefWidth="59.0" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
          <GridPane.margin>
-            <Insets bottom="35.0" right="20.0" />
+            <Insets bottom="90.0" right="20.0" />
          </GridPane.margin></ChoiceBox>
       <Label text="Combo" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
          <GridPane.margin>
-            <Insets bottom="60.0" right="30.0" />
+            <Insets bottom="115.0" right="30.0" />
          </GridPane.margin>
       </Label>
-      <Button fx:id="EnterScoreButton" mnemonicParsing="false" onAction="#EnterScorePushed" text="Enter Score" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+      <Button fx:id="EnterScoreButton" mnemonicParsing="false" onAction="#EnterScorePushed" text="Enter Score" textAlignment="CENTER" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+         <GridPane.margin>
+            <Insets bottom="10.0" left="10.0" />
+         </GridPane.margin>
+         <padding>
+            <Insets bottom="15.0" left="10.0" right="10.0" top="15.0" />
+         </padding></Button>
       <TableView fx:id="ScoreList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="2">
         <columns>
           <TableColumn fx:id="NameColumn" prefWidth="100.0" text="Name" />
@@ -76,10 +82,13 @@
          </GridPane.margin>
       </TextField>
       <Button fx:id="SearchButton" mnemonicParsing="false" onAction="#SearchButtonPushed" text="Enable Search" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
-      <Button fx:id="MakeImageButton" mnemonicParsing="false" onAction="#MakeImageButtonPushed" text="Make Image" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+      <Button fx:id="MakeImageButton" mnemonicParsing="false" onAction="#MakeImageButtonPushed" text="Make Image" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
          <GridPane.margin>
-            <Insets top="75.0" />
+            <Insets bottom="10.0" right="10.0" />
          </GridPane.margin>
+         <padding>
+            <Insets bottom="15.0" left="10.0" right="10.0" top="15.0" />
+         </padding>
       </Button>
       <MenuBar fx:id="Menus" GridPane.columnSpan="3" GridPane.valignment="TOP">
         <menus>
@@ -87,7 +96,7 @@
             <items>
               <MenuItem fx:id="Save" mnemonicParsing="false" onAction="#SaveButtonPushed" text="Save" />
                   <MenuItem fx:id="Load" mnemonicParsing="false" onAction="#LoadButtonPushed" text="Load" />
-                  <MenuItem fx:id="Exit" mnemonicParsing="false" text="Exit" />
+                  <MenuItem fx:id="Exit" mnemonicParsing="false" onAction="#ExitPushed" text="Exit" />
             </items>
           </Menu>
           <Menu fx:id="Songs" mnemonicParsing="false" text="Songs">

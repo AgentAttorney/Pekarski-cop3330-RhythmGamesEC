@@ -75,6 +75,5 @@ public class FindSongNameList {
             BufferedImage CompletedScore = Graphics.makeGraphics(songBackground,songTitle,songDifficulty,songScore,songCombo);
             product.writeToFile(CompletedScore,songTitle,songDifficulty,absolutePath);
 
-
     }
 }
